@@ -158,7 +158,21 @@ class Kohana_Email_Builder
 			$headers .= $type . ": " . $value . "\r\n";
 		}
 
-		return mail($this->_to, $this->_subject, $this->_message, $headers);
+		$result = mail($this->_to, $this->_subject, $this->_message, $headers);
+
+		if ($result === TRUE)
+		{
+			$log_message = "Email to :to with subject ':subject' accepted for delivery.";
+		}
+		else
+		{
+			$log_message = "Email to :to with subject ':subject' failed.";
+		}
+
+		Log::instance()->add(Log::INFO, $log_message, array(
+			':to'		=>	$this->_to,
+			':subject'	=>	$this->_subject,
+		));
 	}
 
 	/**
