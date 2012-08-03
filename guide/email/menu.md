@@ -1,4 +1,4 @@
 # [Email]()
-- [Introduction](introduction)
+- [Introduction](index)
 - [Email Recipients](recipients)
 - [Email Logging](logging)
