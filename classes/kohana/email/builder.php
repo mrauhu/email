@@ -69,6 +69,20 @@ class Kohana_Email_Builder
 	}
 
 	/**
+	 * Set the email format (e.g. plain text or HTML
+	 *
+	 * @param	string	$format
+	 */
+	public function format($format = 'text/plain')
+	{
+		// Set the email format header.
+		$this->header('MIME-Version', '1.0');
+		$this->header('Content-type', $format . "; charset=iso-8859-1");
+
+		return $this;
+	}
+
+	/**
 	 * Add a header to the email
 	 *
 	 * @param	string	$name	The name of the header.
@@ -130,12 +144,8 @@ class Kohana_Email_Builder
 	 * Send the email
 	 *
 	 */
-	public function send($format = 'text/plain')
+	public function send()
 	{
-		// Set the email format header.
-		$this->header('MIME-Version', '1.0');
-		$this->header('Content-type', $format . "; charset=iso-8859-1");
- 
 		// Check that we've got everything we need.
 		if ( ! $this->_to)
 		{
@@ -145,6 +155,12 @@ class Kohana_Email_Builder
 		if ( ! $this->_message)
 		{
 			throw new Kohana_Exception("You must set a message body");
+		}
+
+		// Check for a format header.
+		if ( ! isset($this->_headers['Content-type']))
+		{
+			$this->format('text/plain');
 		}
 
 		// Set a default subject if none has been set.
@@ -160,19 +176,22 @@ class Kohana_Email_Builder
 
 		$result = mail($this->_to, $this->_subject, $this->_message, $headers);
 
-		if ($result === TRUE)
+		if (kohana::$config->load('email')->logging)
 		{
-			$log_message = "Email to :to with subject ':subject' accepted for delivery.";
-		}
-		else
-		{
-			$log_message = "Email to :to with subject ':subject' failed.";
-		}
+			if ($result === TRUE)
+			{
+				$log_message = "Email to :to with subject ':subject' accepted for delivery.";
+			}
+			else
+			{
+				$log_message = "Email to :to with subject ':subject' failed.";
+			}
 
-		Log::instance()->add(Log::INFO, $log_message, array(
-			':to'		=>	$this->_to,
-			':subject'	=>	$this->_subject,
-		));
+			Log::instance()->add(Log::INFO, $log_message, array(
+				':to'		=>	$this->_to,
+				':subject'	=>	$this->_subject,
+			));
+		}
 	}
 
 	/**

@@ -1,4 +1,4 @@
-# Email module for Kohana
+# Email module for Kohana using sendmail
 This module provides a Kohana interface to PHPs native mail() function. This module is currently in development.
 
 ## Usage
