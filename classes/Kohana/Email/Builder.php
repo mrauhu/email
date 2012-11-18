@@ -14,7 +14,7 @@ class Kohana_Email_Builder
 	protected $_to;
 
 	protected $_subject;
-
+	
 	public function __construct($subject = NULL, $message = NULL)
 	{
 		$this->subject($subject);
@@ -77,7 +77,7 @@ class Kohana_Email_Builder
 	{
 		// Set the email format header.
 		$this->header('MIME-Version', '1.0');
-		$this->header('Content-type', $format . "; charset=iso-8859-1");
+		$this->header('Content-type', $format . "; charset=UTF-8");
 
 		return $this;
 	}
@@ -202,6 +202,6 @@ class Kohana_Email_Builder
 	 */
 	public function subject($subject)
 	{
-		$this->_subject = $subject;
+		$this->_subject = '=?UTF-8?B?'.base64_encode($subject).'?=';
 	}
 }
